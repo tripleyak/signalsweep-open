@@ -30,6 +30,42 @@ Upload `signalsweep-open.skill` to any skill host that supports `.skill` package
 
 The extracted source used to build the package lives in [`signalsweep/`](signalsweep/).
 
+### Claude Code / Codex Workshop Install
+
+For a local workshop install on macOS:
+
+```bash
+set -e
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+HOMEBREW_NO_AUTO_UPDATE=1 brew install python@3.12
+mkdir -p ~/.claude/skills ~/.codex/skills
+curl -L --fail -o /tmp/signalsweep-open.skill \
+  https://github.com/tripleyak/signalsweep-open/releases/download/v3.28.3/signalsweep-open.skill
+shasum -a 256 /tmp/signalsweep-open.skill
+unzip -q -o /tmp/signalsweep-open.skill -d ~/.claude/skills
+unzip -q -o /tmp/signalsweep-open.skill -d ~/.codex/skills
+SIGNALSWEEP_PYTHON="$(command -v python3.13 || command -v python3.12 || command -v python3)"
+"$SIGNALSWEEP_PYTHON" - <<'PY'
+import sys
+if sys.version_info < (3, 12):
+    raise SystemExit("SignalSweep needs Python 3.12+. Run: brew install python@3.12")
+print(f"Using Python {sys.version.split()[0]}")
+PY
+"$SIGNALSWEEP_PYTHON" ~/.claude/skills/signalsweep/scripts/signalsweep.py setup --free-public-keys --write-template
+```
+
+Restart Claude Code or Codex after install, then run:
+
+```text
+/signalsweep pickleball paddle grip sweaty hands
+```
+
+Expected checksum:
+
+```text
+15a066b1b38b8f7bbc516c40a85540a5ed8f6fa2b089efc5f2cf90dcca720524
+```
+
 ## Public Safety Defaults
 
 The package embeds `public-profile: true` and starts in a cost-safe mode:
