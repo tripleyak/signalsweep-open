@@ -35,6 +35,20 @@ The extracted source used to build the package lives in [`signalsweep/`](signals
 For a local workshop install on macOS:
 
 ```bash
+curl -fsSL https://raw.githubusercontent.com/tripleyak/signalsweep-open/main/scripts/install_workshop.sh | bash
+```
+
+Restart Claude Code or Codex after install, then run:
+
+```text
+/signalsweep pickleball paddle grip sweaty hands
+```
+
+### Manual Fallback
+
+If the one-line installer fails, run this:
+
+```bash
 set -e
 export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
 HOMEBREW_NO_AUTO_UPDATE=1 brew install python@3.12
@@ -52,12 +66,6 @@ if sys.version_info < (3, 12):
 print(f"Using Python {sys.version.split()[0]}")
 PY
 "$SIGNALSWEEP_PYTHON" ~/.claude/skills/signalsweep/scripts/signalsweep.py setup --free-public-keys --write-template
-```
-
-Restart Claude Code or Codex after install, then run:
-
-```text
-/signalsweep pickleball paddle grip sweaty hands
 ```
 
 Expected checksum:
