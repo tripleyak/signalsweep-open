@@ -35,7 +35,7 @@ The extracted source used to build the package lives in [`signalsweep/`](signals
 For a local workshop install on macOS:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/tripleyak/signalsweep-open/main/scripts/install_workshop.sh | bash
+curl -fsSL https://raw.githubusercontent.com/tripleyak/signalsweep-open/v3.28.4/scripts/install_workshop.sh | bash
 ```
 
 Restart Claude Code or Codex after install, then run:
