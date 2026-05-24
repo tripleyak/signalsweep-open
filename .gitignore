@@ -1,0 +1,6 @@
+.DS_Store
+dist/
+tmp/
+*.pyc
+__pycache__/
+signalsweep-open.skill
