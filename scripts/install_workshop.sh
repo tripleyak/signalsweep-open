@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VERSION="3.28.3"
+VERSION="3.28.4"
 SKILL_URL="https://github.com/tripleyak/signalsweep-open/releases/download/v${VERSION}/signalsweep-open.skill"
-EXPECTED_SHA256="15a066b1b38b8f7bbc516c40a85540a5ed8f6fa2b089efc5f2cf90dcca720524"
+EXPECTED_SHA256="db4a060a3642b6160d8f61e4ccf5c16512b73a7baab59730330b146f73d013de"
 
 export PATH="/opt/homebrew/bin:/usr/local/bin:${PATH:-}"
 

@@ -247,6 +247,7 @@ def write_setup_config(env_path: Path, from_browser: str = "auto") -> bool:
             if existing_content and not existing_content.endswith("\n"):
                 f.write("\n")
             f.write("\n".join(lines_to_add) + "\n")
+        env_path.chmod(0o600)
 
         return True
 
@@ -304,6 +305,7 @@ def write_free_public_key_template(env_path: Path | None) -> Dict[str, Any]:
             if existing:
                 f.write("\n")
             f.write(free_public_key_template())
+        env_path.chmod(0o600)
         return {
             "env_written": True,
             "template_written": True,

@@ -9,13 +9,13 @@ SignalSweep is an agentic research skill that searches many public, local, and b
 Latest public package:
 
 ```text
-https://github.com/tripleyak/signalsweep-open/releases/download/v3.28.3/signalsweep-open.skill
+https://github.com/tripleyak/signalsweep-open/releases/download/v3.28.4/signalsweep-open.skill
 ```
 
 SHA256:
 
 ```text
-15a066b1b38b8f7bbc516c40a85540a5ed8f6fa2b089efc5f2cf90dcca720524
+db4a060a3642b6160d8f61e4ccf5c16512b73a7baab59730330b146f73d013de
 ```
 
 Verify after download:
@@ -54,7 +54,7 @@ export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
 HOMEBREW_NO_AUTO_UPDATE=1 brew install python@3.12
 mkdir -p ~/.claude/skills ~/.codex/skills
 curl -L --fail -o /tmp/signalsweep-open.skill \
-  https://github.com/tripleyak/signalsweep-open/releases/download/v3.28.3/signalsweep-open.skill
+  https://github.com/tripleyak/signalsweep-open/releases/download/v3.28.4/signalsweep-open.skill
 shasum -a 256 /tmp/signalsweep-open.skill
 unzip -q -o /tmp/signalsweep-open.skill -d ~/.claude/skills
 unzip -q -o /tmp/signalsweep-open.skill -d ~/.codex/skills
@@ -71,7 +71,7 @@ PY
 Expected checksum:
 
 ```text
-15a066b1b38b8f7bbc516c40a85540a5ed8f6fa2b089efc5f2cf90dcca720524
+db4a060a3642b6160d8f61e4ccf5c16512b73a7baab59730330b146f73d013de
 ```
 
 ## Public Safety Defaults

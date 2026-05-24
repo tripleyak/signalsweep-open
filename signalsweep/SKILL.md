@@ -1,6 +1,6 @@
 ---
 name: signalsweep
-version: "3.28.3"
+version: "3.28.4"
 public-profile: true
 description: "Agentic research skill across 150 sources. Fork of last30days 3.3.0 extended with LinkedIn, Stack Overflow, podcasts, Medium/Substack, Product Hunt, ScrapeCreators X, SEC EDGAR, arXiv, bioRxiv, medRxiv, Semantic Scholar, OpenAlex, PubMed, data.gov, BLS, WorldBank, Eurostat, Wikipedia pageviews/edits, Amazon/ecommerce intelligence (Keepa, Helium10, JungleScout, DataDive, SmartScout, Amazon Reviews, TikTok Shop, SP-API, Ads API, Google Shopping), Deep Research LLM providers (ChatGPT Deep Research, Claude Research, Gemini Deep Research, Grok DeepSearch, OpenRouter Research), demand-signal sources (Google Trends, Pinterest Trends, TikTok Creative Center, Amazon autocomplete, YouTube Trending, Soovle, AnswerSocrates, Keyword Sheeter, SparkToro, Exploding Topics, AnswerThePublic, AlsoAsked, Glimpse), non-Amazon marketplace expansion (Etsy, Pinterest commerce, Amazon Vendor Central, Walmart Marketplace, Walmart Connect, TikTok Shop seller), patents/legal/regulatory tier (Federal Register, openFDA, CourtListener, USPTO patents via PatentsView, EPO patents via OPS), competitive ad intelligence (Meta + Google + TikTok + LinkedIn Ad Libraries), historical archaeology (Wayback Machine CDX), review aggregation (App Store + Yelp Fusion + Trustpilot + G2 + Capterra + Google Play), financial markets (FRED + Alpha Vantage + Polygon.io + Finnhub + SEC XBRL), and upstream last30days v3.3.0 additions including Digg, competitor fanout, xurl, HTML briefs, Keychain-backed config, relevance scoring, comment enrichment, and planner hardening."
 argument-hint: 'signalsweep AI video tools, signalsweep best noise cancelling headphones'
@@ -231,7 +231,7 @@ End of OUTPUT CONTRACT. The laws above are the contract; everything below is imp
 
 ---
 
-# signalsweep v3.28.3: Agentic Research Across 150 Sources
+# signalsweep v3.28.4: Agentic Research Across 150 Sources
 
 > **Permissions overview:** Reads public web/platform data and optionally saves research briefings to `SIGNALSWEEP_MEMORY_DIR` (defaults to `~/Documents/SignalSweep`). X/Twitter search uses optional user-provided tokens (AUTH_TOKEN/CT0 env vars). Bluesky search uses optional app password (BSKY_HANDLE/BSKY_APP_PASSWORD env vars - create at bsky.app/settings/app-passwords). All credential usage and data writes are documented in the [Security & Permissions](#security--permissions) section.
 
