@@ -18,6 +18,102 @@ from urllib.request import Request, urlopen
 logger = logging.getLogger(__name__)
 
 
+FREE_PUBLIC_KEY_SOURCES = [
+    {
+        "key": "BEA_API_KEY",
+        "label": "BEA API",
+        "source": "bea",
+        "kind": "free_api_key",
+        "priority": "recommended",
+        "signup_url": "https://apps.bea.gov/API/signup/",
+        "what_it_unlocks": "US Bureau of Economic Analysis dataset search.",
+    },
+    {
+        "key": "USDA_NASS_API_KEY",
+        "label": "USDA NASS Quick Stats",
+        "source": "usda_nass",
+        "kind": "free_api_key",
+        "priority": "recommended",
+        "signup_url": "https://quickstats.nass.usda.gov/api",
+        "what_it_unlocks": "US agricultural production statistics.",
+    },
+    {
+        "key": "USDA_FOODDATA_API_KEY",
+        "label": "USDA FoodData Central",
+        "source": "usda_fooddata",
+        "kind": "free_api_key",
+        "priority": "optional",
+        "signup_url": "https://fdc.nal.usda.gov/api-key-signup.html",
+        "what_it_unlocks": "Higher limits for USDA food and product attribute search.",
+    },
+    {
+        "key": "OPENFDA_API_KEY",
+        "label": "openFDA",
+        "source": "fda_openfda",
+        "kind": "free_api_key",
+        "priority": "optional",
+        "signup_url": "https://open.fda.gov/apis/authentication/",
+        "what_it_unlocks": "Higher limits for FDA drug, device, food, supplement, and recall data.",
+    },
+    {
+        "key": "YOUTUBE_API_KEY",
+        "label": "YouTube Data API",
+        "source": "youtube_trending",
+        "kind": "free_api_key",
+        "priority": "optional",
+        "signup_url": "https://developers.google.com/youtube/v3/getting-started",
+        "what_it_unlocks": "YouTube trending and trend-proxy search beyond local yt-dlp transcript search.",
+    },
+    {
+        "key": "SEMANTIC_SCHOLAR_API_KEY",
+        "label": "Semantic Scholar API",
+        "source": "semantic_scholar",
+        "kind": "free_api_key",
+        "priority": "optional",
+        "signup_url": "https://www.semanticscholar.org/product/api",
+        "what_it_unlocks": "Higher limits for citation-graph scholarly search.",
+    },
+    {
+        "key": "NCBI_API_KEY",
+        "label": "NCBI API",
+        "source": "pubmed",
+        "kind": "free_api_key",
+        "priority": "optional",
+        "signup_url": "https://www.ncbi.nlm.nih.gov/datasets/docs/v2/api/api-keys/",
+        "what_it_unlocks": "Higher limits for PubMed and NCBI E-utilities.",
+    },
+    {
+        "key": "CDC_APP_TOKEN",
+        "label": "CDC Socrata app token",
+        "source": "cdc_data",
+        "kind": "free_api_key",
+        "priority": "optional",
+        "signup_url": "https://data.cdc.gov/profile/edit/developer_settings",
+        "what_it_unlocks": "Higher limits for CDC public health datasets.",
+    },
+    {
+        "key": "SEC_EDGAR_CONTACT_EMAIL",
+        "label": "SEC EDGAR contact email",
+        "source": "sec_edgar",
+        "kind": "contact_identifier",
+        "priority": "recommended",
+        "signup_url": "https://www.sec.gov/edgar/sec-api-documentation",
+        "what_it_unlocks": "Polite SEC EDGAR User-Agent identification for filing requests.",
+    },
+    {
+        "key": "OPENALEX_CONTACT_EMAIL",
+        "label": "OpenAlex contact email",
+        "source": "openalex",
+        "kind": "contact_identifier",
+        "priority": "recommended",
+        "signup_url": "https://docs.openalex.org/",
+        "what_it_unlocks": "OpenAlex polite-pool identification for scholarly search.",
+    },
+]
+
+_FREE_PUBLIC_KEY_TEMPLATE_MARKER = "# --- SignalSweep public/free data keys ---"
+
+
 def _truthy(value: Any) -> bool:
     return str(value or "").strip().lower() in {"1", "true", "yes", "on"}
 
@@ -159,6 +255,101 @@ def write_setup_config(env_path: Path, from_browser: str = "auto") -> bool:
         return False
 
 
+def free_public_key_status(config: Dict[str, Any]) -> list[dict[str, Any]]:
+    """Return public/free key setup status without exposing configured values."""
+    statuses = []
+    for source in FREE_PUBLIC_KEY_SOURCES:
+        entry = dict(source)
+        entry["configured"] = bool(config.get(source["key"]))
+        statuses.append(entry)
+    return statuses
+
+
+def free_public_key_template() -> str:
+    """Return a commented .env template for public/free keys."""
+    lines = [
+        _FREE_PUBLIC_KEY_TEMPLATE_MARKER,
+        "# Optional user-owned keys/identifiers for free public-data sources.",
+        "# Do not share these values publicly. Uncomment only the lines you use.",
+    ]
+    for source in FREE_PUBLIC_KEY_SOURCES:
+        lines.append(f"# {source['label']}: {source['signup_url']}")
+        lines.append(f"# {source['key']}=")
+    lines.append("# --- End SignalSweep public/free data keys ---")
+    return "\n".join(lines) + "\n"
+
+
+def write_free_public_key_template(env_path: Path | None) -> Dict[str, Any]:
+    """Append the public/free key template to .env if it is not already present."""
+    if env_path is None:
+        return {
+            "env_written": False,
+            "template_written": False,
+            "reason": "no_config_file",
+        }
+    try:
+        env_path = Path(env_path)
+        env_path.parent.mkdir(parents=True, exist_ok=True)
+        existing = env_path.read_text(encoding="utf-8") if env_path.exists() else ""
+        if _FREE_PUBLIC_KEY_TEMPLATE_MARKER in existing:
+            return {
+                "env_written": False,
+                "template_written": False,
+                "reason": "already_present",
+                "env_path": str(env_path),
+            }
+        with open(env_path, "a", encoding="utf-8") as f:
+            if existing and not existing.endswith("\n"):
+                f.write("\n")
+            if existing:
+                f.write("\n")
+            f.write(free_public_key_template())
+        return {
+            "env_written": True,
+            "template_written": True,
+            "env_path": str(env_path),
+        }
+    except OSError as exc:
+        logger.error("Failed to write free public key template to %s: %s", env_path, exc)
+        return {
+            "env_written": False,
+            "template_written": False,
+            "reason": "write_failed",
+            "error": str(exc),
+            "env_path": str(env_path),
+        }
+
+
+def run_free_public_key_setup(
+    config: Dict[str, Any],
+    env_path: Path | None = None,
+    write_template: bool = False,
+) -> Dict[str, Any]:
+    """Return setup instructions/status for user-owned free public-data keys."""
+    keys = free_public_key_status(config)
+    result: Dict[str, Any] = {
+        "status": "ok",
+        "public_mode": _truthy(config.get("SIGNALSWEEP_PUBLIC_MODE")),
+        "env_path": str(env_path) if env_path is not None else None,
+        "free_public_keys": keys,
+        "configured_count": sum(1 for item in keys if item["configured"]),
+        "missing_recommended": [
+            item["key"]
+            for item in keys
+            if item["priority"] == "recommended" and not item["configured"]
+        ],
+        "template": free_public_key_template(),
+        "notes": [
+            "No shared keys are bundled.",
+            "These are user-owned keys or contact identifiers for free public-data sources.",
+            "Paid APIs and Deep Research stay disabled in public mode unless explicitly enabled.",
+        ],
+    }
+    if write_template:
+        result["template_result"] = write_free_public_key_template(env_path)
+    return result
+
+
 def get_setup_status_text(results: Dict[str, Any]) -> str:
     """Return a human-readable summary of auto-setup results.
 
@@ -242,12 +433,23 @@ def run_openclaw_setup(config: Dict[str, Any]) -> Dict[str, Any]:
     else:
         x_method = None
 
+    free_key_status = free_public_key_status(config)
+
     return {
         "yt_dlp": yt_dlp,
         "node": node,
         "python3": python3,
         "keys": keys,
         "x_method": x_method,
+        "public_mode": _truthy(config.get("SIGNALSWEEP_PUBLIC_MODE")),
+        "free_public_keys": {
+            "configured_count": sum(1 for item in free_key_status if item["configured"]),
+            "missing_recommended": [
+                item["key"]
+                for item in free_key_status
+                if item["priority"] == "recommended" and not item["configured"]
+            ],
+        },
     }
 
 

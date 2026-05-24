@@ -574,7 +574,7 @@ def _write_last_run(topic: str, report: "schema.Report") -> None:
 def main() -> int:
     parser = build_parser()
     # Use parse_known_args so setup sub-flags (--device-auth, --github,
-    # --openclaw) pass through without argparse hard-exiting.
+    # --openclaw, --free-public-keys) pass through without argparse hard-exiting.
     args, extra_argv = parser.parse_known_args()
     if args.debug:
         os.environ["LAST30DAYS_DEBUG"] = "1"
@@ -594,6 +594,18 @@ def main() -> int:
         from lib import setup_wizard
         if "--openclaw" in extra_argv:
             results = setup_wizard.run_openclaw_setup(config)
+            print(json.dumps(results))
+            return 0
+        if "--free-public-keys" in extra_argv or "--free-keys" in extra_argv:
+            write_template = (
+                "--write-template" in extra_argv
+                or "--write-free-public-key-template" in extra_argv
+            )
+            results = setup_wizard.run_free_public_key_setup(
+                config,
+                env_path=env.CONFIG_FILE,
+                write_template=write_template,
+            )
             print(json.dumps(results))
             return 0
         if "--github" in extra_argv:

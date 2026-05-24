@@ -58,6 +58,10 @@ KEYCHAIN_KEYS = (
     "PRODUCTHUNT_TOKEN", "COURTLISTENER_API_TOKEN", "PATENTSVIEW_API_KEY",
     "EPA_AIRNOW_API_KEY", "NOAA_CDO_TOKEN", "ETHERSCAN_API_KEY",
     "GOOGLE_PLACES_API_KEY", "SERPAPI_API_KEY", "LISTENNOTES_API_KEY",
+    # Free/public-data user-owned keys and contact identifiers
+    "BEA_API_KEY", "USDA_NASS_API_KEY", "USDA_FOODDATA_API_KEY",
+    "OPENFDA_API_KEY", "SEMANTIC_SCHOLAR_API_KEY", "NCBI_API_KEY",
+    "CDC_APP_TOKEN", "SEC_EDGAR_CONTACT_EMAIL", "OPENALEX_CONTACT_EMAIL",
 )
 
 
@@ -373,6 +377,17 @@ def get_config() -> dict[str, Any]:
         ('EXCLUDE_SOURCES', ''),
         ('LAST30DAYS_YOUTUBE_SSH_HOST', None),
         ('LAST30DAYS_TRANSCRIPT_TIMEOUT', None),
+        # Free/public-data keys and contact identifiers
+        ('BEA_API_KEY', None),
+        ('USDA_NASS_API_KEY', None),
+        ('USDA_FOODDATA_API_KEY', None),
+        ('OPENFDA_API_KEY', None),
+        ('SEMANTIC_SCHOLAR_API_KEY', None),
+        ('NCBI_API_KEY', None),
+        ('CDC_APP_TOKEN', None),
+        ('SEC_EDGAR_CONTACT_EMAIL', None),
+        ('OPENALEX_CONTACT_EMAIL', None),
+        ('YOUTUBE_API_KEY', None),
         ('SIGNALSWEEP_PUBLIC_MODE', "1" if is_public_package() else None),
         # v3.6 public-data toggle
         ('SIGNALSWEEP_DISABLE_PUBLIC_APIS', None),

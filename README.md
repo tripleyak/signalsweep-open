@@ -9,13 +9,13 @@ SignalSweep is an agentic research skill that searches many public, local, and b
 Latest public package:
 
 ```text
-https://github.com/tripleyak/signalsweep-open/releases/download/v3.28.2/signalsweep-open.skill
+https://github.com/tripleyak/signalsweep-open/releases/download/v3.28.3/signalsweep-open.skill
 ```
 
 SHA256:
 
 ```text
-b01f97789f81d414271f4da1beeb459267caeade1a1ac9de9ea15a8205e6aa63
+15a066b1b38b8f7bbc516c40a85540a5ed8f6fa2b089efc5f2cf90dcca720524
 ```
 
 Verify after download:
@@ -41,6 +41,30 @@ The package embeds `public-profile: true` and starts in a cost-safe mode:
 - local SQLite store, watchlist, briefing, and browser-cookie helper scripts excluded
 
 Free/no-auth sources work by default. Optional local CLIs like `gh` and `yt-dlp` can unlock GitHub and YouTube from your own machine without sharing credentials.
+
+## Workshop Free Key Setup
+
+Workshop attendees can add their own free public API keys after install:
+
+```bash
+cd signalsweep
+python3 scripts/signalsweep.py setup --free-public-keys --write-template
+```
+
+This writes a commented template to `~/.config/signalsweep/.env` without overwriting existing values. Users paste their own keys there when ready; this package does not include shared keys.
+
+The template covers:
+
+- `BEA_API_KEY`
+- `USDA_NASS_API_KEY`
+- `USDA_FOODDATA_API_KEY`
+- `OPENFDA_API_KEY`
+- `YOUTUBE_API_KEY`
+- `SEMANTIC_SCHOLAR_API_KEY`
+- `NCBI_API_KEY`
+- `CDC_APP_TOKEN`
+- `SEC_EDGAR_CONTACT_EMAIL`
+- `OPENALEX_CONTACT_EMAIL`
 
 ## Opt Into Paid Or Private Sources
 

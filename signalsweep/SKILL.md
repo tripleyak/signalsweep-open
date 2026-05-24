@@ -1,6 +1,6 @@
 ---
 name: signalsweep
-version: "3.28.2"
+version: "3.28.3"
 public-profile: true
 description: "Agentic research skill across 150 sources. Fork of last30days 3.3.0 extended with LinkedIn, Stack Overflow, podcasts, Medium/Substack, Product Hunt, ScrapeCreators X, SEC EDGAR, arXiv, bioRxiv, medRxiv, Semantic Scholar, OpenAlex, PubMed, data.gov, BLS, WorldBank, Eurostat, Wikipedia pageviews/edits, Amazon/ecommerce intelligence (Keepa, Helium10, JungleScout, DataDive, SmartScout, Amazon Reviews, TikTok Shop, SP-API, Ads API, Google Shopping), Deep Research LLM providers (ChatGPT Deep Research, Claude Research, Gemini Deep Research, Grok DeepSearch, OpenRouter Research), demand-signal sources (Google Trends, Pinterest Trends, TikTok Creative Center, Amazon autocomplete, YouTube Trending, Soovle, AnswerSocrates, Keyword Sheeter, SparkToro, Exploding Topics, AnswerThePublic, AlsoAsked, Glimpse), non-Amazon marketplace expansion (Etsy, Pinterest commerce, Amazon Vendor Central, Walmart Marketplace, Walmart Connect, TikTok Shop seller), patents/legal/regulatory tier (Federal Register, openFDA, CourtListener, USPTO patents via PatentsView, EPO patents via OPS), competitive ad intelligence (Meta + Google + TikTok + LinkedIn Ad Libraries), historical archaeology (Wayback Machine CDX), review aggregation (App Store + Yelp Fusion + Trustpilot + G2 + Capterra + Google Play), financial markets (FRED + Alpha Vantage + Polygon.io + Finnhub + SEC XBRL), and upstream last30days v3.3.0 additions including Digg, competitor fanout, xurl, HTML briefs, Keychain-backed config, relevance scoring, comment enrichment, and planner hardening."
 argument-hint: 'signalsweep AI video tools, signalsweep best noise cancelling headphones'
@@ -231,7 +231,7 @@ End of OUTPUT CONTRACT. The laws above are the contract; everything below is imp
 
 ---
 
-# signalsweep v3.28.2: Agentic Research Across 150 Sources
+# signalsweep v3.28.3: Agentic Research Across 150 Sources
 
 > **Permissions overview:** Reads public web/platform data and optionally saves research briefings to `SIGNALSWEEP_MEMORY_DIR` (defaults to `~/Documents/SignalSweep`). X/Twitter search uses optional user-provided tokens (AUTH_TOKEN/CT0 env vars). Bluesky search uses optional app password (BSKY_HANDLE/BSKY_APP_PASSWORD env vars - create at bsky.app/settings/app-passwords). All credential usage and data writes are documented in the [Security & Permissions](#security--permissions) section.
 
@@ -434,6 +434,7 @@ Detected:
 {✅ or ❌} X/Twitter ({method} configured)
 {✅ or ❌} ScrapeCreators (TikTok, Instagram, Reddit backup)
 {✅ or ❌} Web search ({backend} configured)
+{✅ or ❌} Public/free data keys ({configured_count} configured)
 ```
 
 Then for each missing item, offer setup in priority order:
@@ -452,6 +453,12 @@ Then for each missing item, offer setup in priority order:
 
 4. **Web search** (if no Brave/Exa/Serper key): "A web search key enables smarter results. Brave Search is free for 2,000 queries/month at brave.com/search/api"
 
+5. **Public/free data keys** (recommended for public workshop installs): "SignalSweep works without keys, but user-owned free keys unlock BEA and USDA NASS real data and raise public API limits for PubMed, Semantic Scholar, openFDA, USDA FoodData, CDC, SEC, and OpenAlex."
+   - Run `"${SIGNALSWEEP_PYTHON}" "${SKILL_ROOT}/scripts/signalsweep.py" setup --free-public-keys --write-template`, parse JSON output, and show the missing recommended keys plus signup links.
+   - Option A: "Open the free-key template" - open `~/.config/signalsweep/.env` after the command writes the commented template.
+   - Option B: "I have keys now" - accept pasted `KEY=value` lines and append only missing keys to `.env`.
+   - Option C: "Skip for now"
+
 After setup, write `SETUP_COMPLETE=true` to .env and proceed to research.
 
 **Skip to "END OF FIRST-RUN WIZARD" below after completing the OpenClaw flow.**
@@ -462,7 +469,7 @@ After setup, write `SETUP_COMPLETE=true` to .env and proceed to research.
 
 This flow applies to Claude Code CLI, Codex app, Codex CLI, Claude desktop/app, and any future host with shell/file/web capabilities. When a step says `AskUserQuestion`, use the host-portable question rule above.
 
-**You MUST follow these steps IN ORDER. Do NOT skip ahead to the topic picker or research. The sequence is: (1) welcome text -> (2) setup modal -> (3) run setup if chosen -> (4) optional ScrapeCreators modal -> (5) topic picker. You MUST start at step 1.**
+**You MUST follow these steps IN ORDER. Do NOT skip ahead to the topic picker or research. The sequence is: (1) welcome text -> (2) setup modal -> (3) run setup if chosen -> (4) optional ScrapeCreators modal -> (5) optional public/free data key flow -> (6) topic picker. You MUST start at step 1.**
 
 **Step 1: Display the following welcome text ONCE as a normal message (not blockquoted). Then IMMEDIATELY call AskUserQuestion - do NOT repeat any of the welcome text inside the AskUserQuestion call.**
 
@@ -532,6 +539,34 @@ Options:
 
 **After TikTok/Instagram opt-in (or SC skip), show the first research topic modal:**
 
+**Before the topic modal, offer the public/free data key flow for workshop/public installs:**
+
+Run this probe and template writer:
+```bash
+cd {SKILL_DIR} && "${SIGNALSWEEP_PYTHON}" scripts/signalsweep.py setup --free-public-keys --write-template
+```
+
+Parse the JSON. Do not print key values. Tell the user:
+
+"SignalSweep already works without keys. For workshop users who want the strongest free public-data tier, I added a commented template at `~/.config/signalsweep/.env`. Add your own free keys there when ready - never use shared keys."
+
+If `missing_recommended` is non-empty, summarize the recommended user-owned items:
+- `BEA_API_KEY` - BEA data, get it at `https://apps.bea.gov/API/signup/`
+- `USDA_NASS_API_KEY` - USDA NASS Quick Stats, get it at `https://quickstats.nass.usda.gov/api`
+- `SEC_EDGAR_CONTACT_EMAIL` - contact email for SEC EDGAR polite User-Agent
+- `OPENALEX_CONTACT_EMAIL` - contact email for OpenAlex polite pool
+
+Then call AskUserQuestion:
+Question: "Do you want to add free public-data keys now?"
+Options:
+- "Open template" - open `~/.config/signalsweep/.env`; user edits, saves, and comes back
+- "Paste keys here" - accept pasted `KEY=value` lines for public/free keys only and append missing keys without overwriting existing values
+- "Skip for now" - continue; no-auth sources still work
+
+Allowed keys in this paste flow: `BEA_API_KEY`, `USDA_NASS_API_KEY`, `USDA_FOODDATA_API_KEY`, `OPENFDA_API_KEY`, `YOUTUBE_API_KEY`, `SEMANTIC_SCHOLAR_API_KEY`, `NCBI_API_KEY`, `CDC_APP_TOKEN`, `SEC_EDGAR_CONTACT_EMAIL`, `OPENALEX_CONTACT_EMAIL`. Reject shared keys and do not write paid-provider keys in this flow.
+
+**After public/free key opt-in (or skip), show the first research topic modal:**
+
 **Call AskUserQuestion:**
 Question: "What do you want to research first?"
 Options:
@@ -583,6 +618,18 @@ Other bonus sources (add anytime):
 - `BSKY_HANDLE=you.bsky.social` + `BSKY_APP_PASSWORD=xxx` - Bluesky (free app password)
 - `BRAVE_API_KEY=xxx` - Brave web search
 
+Public/free data keys (optional, user-owned, no shared keys):
+- `BEA_API_KEY=xxx` - BEA datasets, free at `https://apps.bea.gov/API/signup/`
+- `USDA_NASS_API_KEY=xxx` - USDA NASS Quick Stats, free at `https://quickstats.nass.usda.gov/api`
+- `USDA_FOODDATA_API_KEY=xxx` - higher limits for USDA FoodData Central
+- `OPENFDA_API_KEY=xxx` - higher limits for openFDA
+- `YOUTUBE_API_KEY=xxx` - YouTube Data API trending/trend-proxy search
+- `SEMANTIC_SCHOLAR_API_KEY=xxx` - higher Semantic Scholar limits
+- `NCBI_API_KEY=xxx` - higher PubMed/NCBI E-utilities limits
+- `CDC_APP_TOKEN=xxx` - higher CDC public-data limits
+- `SEC_EDGAR_CONTACT_EMAIL=you@example.com` - polite SEC EDGAR User-Agent contact
+- `OPENALEX_CONTACT_EMAIL=you@example.com` - OpenAlex polite-pool contact
+
 Always add this last line: `SETUP_COMPLETE=true`
 
 **CRITICAL: NEVER overwrite an existing .env file.** Before writing ANY key to `~/.config/signalsweep/.env`:
@@ -626,6 +673,18 @@ Create `~/.config/signalsweep/.env` if it doesn't exist (check first!), pre-popu
 # BRAVE_API_KEY=              # 2,000 free queries/month at brave.com/search/api
 # OPENROUTER_API_KEY=         # Perplexity Sonar via OpenRouter
 
+# Public/free data keys:
+# BEA_API_KEY=                # BEA datasets: https://apps.bea.gov/API/signup/
+# USDA_NASS_API_KEY=          # USDA NASS Quick Stats: https://quickstats.nass.usda.gov/api
+# USDA_FOODDATA_API_KEY=      # USDA FoodData higher limits
+# OPENFDA_API_KEY=            # openFDA higher limits
+# YOUTUBE_API_KEY=            # YouTube Data API trending/trend-proxy search
+# SEMANTIC_SCHOLAR_API_KEY=   # Semantic Scholar higher limits
+# NCBI_API_KEY=               # PubMed/NCBI higher limits
+# CDC_APP_TOKEN=              # CDC public-data higher limits
+# SEC_EDGAR_CONTACT_EMAIL=    # SEC polite User-Agent contact
+# OPENALEX_CONTACT_EMAIL=     # OpenAlex polite-pool contact
+
 SETUP_COMPLETE=true
 ```
 If the file already exists, do NOT overwrite it. Just open it.
@@ -649,6 +708,8 @@ You do NOT need API keys to use signalsweep. It works out of the box with Reddit
 
 Source unlock progression (all free):
 - Zero config (40% quality): Reddit (threads + comments), HN, Polymarket, GitHub (if `gh` installed) - works immediately
+- Public data baseline: 60+ free/no-auth public sources including academic, government, developer, crypto, safety, complaint, and product-attribute sources
+- + user-owned public/free keys: BEA + USDA NASS real data and higher limits for PubMed, Semantic Scholar, openFDA, USDA FoodData, CDC, SEC, OpenAlex, and YouTube Data API
 - + X cookies (60%): Log into x.com in any browser. signalsweep scans your cookies automatically. No signup required.
 - + yt-dlp (80%): `brew install yt-dlp` - open source, 190K+ GitHub stars. Enables YouTube search and transcripts.
 - Auto setup does both X cookies + yt-dlp in 30 seconds.
